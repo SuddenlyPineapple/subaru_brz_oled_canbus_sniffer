@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "U8g2lib.h"
 #include <U8x8lib.h>
-#include <Wire.h>
 
 #include "break_pressure_graphics.h"
 
@@ -12,7 +11,7 @@ const int IRQ_PIN = 9;
 const int QUARTZ_MHZ = 16;  // Some MCP2515 boards have 8 MHz quartz.
 const int SPI_MHZ = 8;
 
-// Connections:
+// CAN Connections:
 //  MCP | BOARD
 //  INT | Not used, can connect to Pin 9
 //  SCK | SCK
@@ -23,7 +22,15 @@ const int SPI_MHZ = 8;
 //  VCC | 3.3V
 
 
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0); // Fast I2C / TWI
+
+//For Memory (SRAM) optimization
+//Read constructor DOCS:https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#constructor-name
+U8G2_SSD1306_128X64_NONAME_2_HW_I2C u8g2(U8G2_R0,U8X8_PIN_NONE,19,18); // Fast I2C / TWI
+//Alternative constructors:
+//U8G2_SSD1306_128X64_NONAME_F_2ND_HW_I2C
+//U8G2_SSD1306_128X64_NONAME_1_SW_I2C u8g2(U8G2_R0, 19, 18);
+//U8G2_SSD1306_128X64_NONAME_2_SW_I2C u8g2(U8G2_R0, 19, 18);
+
 // U8GLIB_SSD1306_128X64 u8g(13, 11, 8, 9, 10); // SPI connection
 // for SPI connection, use this wiring:
 // GND > GND

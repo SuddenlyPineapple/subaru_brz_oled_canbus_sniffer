@@ -1,10 +1,12 @@
 #include <Arduino.h>
 #include "U8g2lib.h"
 #include <U8x8lib.h>
+#include <CAN.h>
 
 #include "break_pressure_graphics.h"
+#include "canController.h"
 
-#include <CAN.h>
+
 
 const int CS_PIN = 7;
 const int IRQ_PIN = 9;
@@ -55,6 +57,8 @@ int frame = 0;      // frame for the inner part of the icon
 int led_progress = 0;
 bool led_on = false;
 
+CANBusController controllerCAN;
+
 void setup() {
     // OLED Display config
     //u8g.setFont(u8g_font_tpssb);  // no need to set the font, as we are not drawing any strings
@@ -71,16 +75,7 @@ void setup() {
         // Whatever, noone's going to see anyways.
     }
 
-    CAN.setClockFrequency(QUARTZ_MHZ * 1E6);
-    CAN.setSPIFrequency(SPI_MHZ * 1E6);
-    CAN.setPins(CS_PIN, IRQ_PIN);
-
-    // Subaru BRZ uses a 500k baud rate.
-    while (!CAN.begin(500000)) {
-        Serial.println("Failed to connect to the CAN controller!");
-        delay(1000);
-    }
-    Serial.println("CAN controller connected");
+    controllerCAN.connect();
 
     // Debug diode config
     pinMode(A0, INPUT);    // set the pinmode for A0 to input to read the potentiometer value
@@ -88,6 +83,8 @@ void setup() {
 }
 
 void loop() {
+    controllerCAN.readPackets();
+
     u8g2.firstPage();
     do {
         u8g2.setColorIndex(0);

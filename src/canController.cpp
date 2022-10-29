@@ -1,7 +1,3 @@
-//
-// Created by Wojciech Kasperski on 10/29/2022.
-//
-
 #include "canController.h"
 #include <CAN.h>
 
@@ -36,40 +32,57 @@ bool CANBusController::connect() {
     return true;
 }
 
-//int CANBusController::readPackets() {
-//    // try to parse packet
-//    int packetSize = CAN.parsePacket();
-//
-//    if (packetSize) {
-//        // received a packet
-//        Serial.print("Received ");
-//
-//        if (CAN.packetExtended()) {
-//            Serial.print("extended ");
-//        }
-//
-//        if (CAN.packetRtr()) {
-//            // Remote transmission request, packet contains no data
-//            Serial.print("RTR ");
-//        }
-//
-//        Serial.print("packet with id 0x");
-//        Serial.print(CAN.packetId(), HEX);
-//
-//        if (CAN.packetRtr()) {
-//            Serial.print(" and requested length ");
-//            Serial.println(CAN.packetDlc());
-//        } else {
-//            Serial.print(" and length ");
-//            Serial.println(packetSize);
-//
-//            // only print packet data for non-RTR packets
-//            while (CAN.available()) {
-//                Serial.print((char)CAN.read());
-//            }
-//            Serial.println();
-//        }
-//        Serial.println();
-//    }
-//    return 1;
-//}
+int CANBusController::readPackets() {
+    // try to parse packet
+    int packetSize = CAN.parsePacket();
+
+    if (packetSize) {
+        // received a packet
+        Serial.print("Received ");
+
+        if (CAN.packetExtended()) {
+            Serial.print("extended ");
+        }
+
+        if (CAN.packetRtr()) {
+            // Remote transmission request, packet contains no data
+            Serial.print("RTR ");
+        }
+
+        Serial.print("packet with id 0x");
+        long packetID = CAN.packetId();
+        Serial.print(packetID, HEX);
+
+        if (CAN.packetRtr()) {
+            Serial.print(" and requested length ");
+            Serial.println(CAN.packetDlc());
+        } else {
+            Serial.print(" and length ");
+            Serial.println(packetSize);
+
+            if(packetID == 0xD1) {
+                Serial.println("\nBREAK PRESSURE CATCH: ");
+                uint8_t data[8];
+                int data_length = 0;
+                while (data_length < packetSize && data_length < sizeof(data)) {
+                    int byte_read = CAN.read();
+                    if (byte_read == -1) {
+                        break;
+                    }
+
+                    data[data_length++] = byteread;
+                }
+                brakePressure = (int) data[2] * 128;
+                Serial.print(brakePressure);
+            } else {
+                // only print packet data for non-RTR packets
+                while (CAN.available()) {
+                    Serial.print((char)CAN.read(), HEX);
+                }
+            }
+            Serial.println();
+        }
+        Serial.println();
+    }
+    return 1;
+}

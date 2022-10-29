@@ -1,29 +1,9 @@
 #include <Arduino.h>
 #include "U8g2lib.h"
 #include <U8x8lib.h>
-#include <CAN.h>
 
 #include "break_pressure_graphics.h"
 #include "canController.h"
-
-
-
-const int CS_PIN = 7;
-const int IRQ_PIN = 9;
-const int QUARTZ_MHZ = 16;  // Some MCP2515 boards have 8 MHz quartz.
-const int SPI_MHZ = 8;
-
-// CAN Connections:
-//  MCP | BOARD
-//  INT | Not used, can connect to Pin 9
-//  SCK | SCK
-//   SI | MO
-//   SO | MI
-//   CS | Pin 7
-//  GND | GND
-//  VCC | 3.3V
-
-
 
 //For Memory (SRAM) optimization
 //Read constructor DOCS:https://github.com/olikraus/u8g2/wiki/u8g2setupcpp#constructor-name
@@ -99,7 +79,7 @@ void loop() {
         //u8g.setColorIndex(0);                                    // black color
         //u8g.drawBox(1, 12, 126, 12);                             // rectangle covering the fullscreen background
         u8g2.setColorIndex(1); // white color
-        u8g2.drawBox(2, 14, map(progress, 0, 1023, 0, 124), 10); // actual gauge fill, remapped from 0-1023 to 0-124 (maximum rectangle size)
+        u8g2.drawBox(2, 14, map(controllerCAN.brakePressure, 0, 1023, 0, 124), 10); // actual gauge fill, remapped from 0-1023 to 0-124 (maximum rectangle size)
 
 //        // draw the animated inside part of the icon
 //        u8g2.drawXBMP(37, 39, 16, 9, epd_bitmap_allArray[frame]);

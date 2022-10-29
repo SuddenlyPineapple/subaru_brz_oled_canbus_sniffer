@@ -2,7 +2,7 @@
 
 ### 📃 How to configure & upload to board?
  - Install platformio and configure it with your favorite editor (upload arduino blink program to check if it works)
- - run `platformio lib install` command in your terminal
+ - run `platformio pkg install` command in your terminal
  - configure your ide to program the board
 
 ### 📃 Useful links

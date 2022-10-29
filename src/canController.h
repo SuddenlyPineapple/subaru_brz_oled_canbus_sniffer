@@ -1,7 +1,3 @@
-//
-// Created by Wojciech Kasperski on 10/29/2022.
-//
-
 #ifndef SUBARU_BRZ_OLED_CANBUS_SNIFFER_CANCONTROLLER_H
 #define SUBARU_BRZ_OLED_CANBUS_SNIFFER_CANCONTROLLER_H
 
@@ -10,9 +6,10 @@
 
 class CANBusController {
     public:
+        int brakePressure = 0;
         CANBusController();
         bool connect();
-//        int readPackets();
+        int readPackets();
 };
 
 
